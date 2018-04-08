@@ -4,7 +4,7 @@
  *
  * Copyright (c) 2016 seeed technology inc.
  * Website    : www.seeedstudio.com
- * Author     : Lambor, CHN
+ * Author     : Lambor
  * Create Time:
  * Change Log :
  *
