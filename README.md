@@ -1,6 +1,6 @@
 Grove - Temp&Humi&Barometer Sensor (BME280)
 ------------
-<img src=https://raw.githubusercontent.com/SeeedDocument/Grove-Barometer_Sensor-BME280/master/img/Grove-Barometer_Sensor-BMP280-700_s.jpg width=400>
+<img src=https://raw.githubusercontent.com/SeeedDocument/Grove-Barometer_Sensor-BME280/master/img/Grove-Barometer_Sensor-BMP280-700_s.jpg width=300><img src=https://statics3.seeedstudio.com/seeed/img/2016-06/qgrfZSEmJqN7KPBR7NJKaNl1.jpg width=300>
 
 [Grove - Temp&Humi&Barometer Sensor (BME280)](https://www.seeedstudio.com/s/Grove-Temp%26Humi%26Barometer-Sensor-(BME280)-p-2653.html)
 
