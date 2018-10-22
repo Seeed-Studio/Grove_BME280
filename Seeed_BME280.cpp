@@ -40,6 +40,10 @@ float BME280::getTemperature(void)
   int32_t var1, var2;
 
   int32_t adc_T = BME280Read24(BME280_REG_TEMPDATA);
+  // Check if the last transport successed
+  if(!isTransport_OK) {
+    return _INVALID_DATA;
+  }
   adc_T >>= 4;
   var1 = (((adc_T >> 3) - ((int32_t)(dig_T1 << 1))) *
     ((int32_t)dig_T2)) >> 11;
@@ -59,6 +63,10 @@ uint32_t BME280::getPressure(void)
 
   // Call getTemperature to get t_fine
   getTemperature();
+  // Check if the last transport successed
+  if(!isTransport_OK) {
+    return _INVALID_DATA;
+  }
 
   int32_t adc_P = BME280Read24(BME280_REG_PRESSUREDATA);
   adc_P >>= 4;
@@ -87,6 +95,10 @@ uint32_t BME280::getHumidity(void)
 
   // Call getTemperature to get t_fine
   getTemperature();
+  // Check if the last transport successed
+  if(!isTransport_OK) {
+    return _INVALID_DATA;
+  }
 
   adc_H = BME280Read16(BME280_REG_HUMIDITYDATA);
 
@@ -115,7 +127,13 @@ uint8_t BME280::BME280Read8(uint8_t reg)
   Wire.endTransmission();
 
   Wire.requestFrom(_address, 1);
-  if(!Wire.available()) return 0;
+  // return 0 if slave didn't response
+  if(Wire.available() < 1) {
+    isTransport_OK = false;
+    return 0;
+  } else {
+    isTransport_OK = true;
+  }
 
   return Wire.read();
 }
@@ -129,7 +147,13 @@ uint16_t BME280::BME280Read16(uint8_t reg)
   Wire.endTransmission();
 
   Wire.requestFrom(_address, 2);
-  if(Wire.available()<2) return 0;
+  // return 0 if slave didn't response
+  if(Wire.available() < 2) {
+    isTransport_OK = false;
+    return 0;
+  } else {
+    isTransport_OK = true;
+  }
   msb = Wire.read();
   lsb = Wire.read();
 
@@ -161,7 +185,13 @@ uint32_t BME280::BME280Read24(uint8_t reg)
   Wire.endTransmission();
 
   Wire.requestFrom(_address, 3);
-  if(Wire.available()<3) return 0;
+  // return 0 if slave didn't response
+  if(Wire.available() < 3) {
+    isTransport_OK = false;
+    return 0;
+  } else {
+    isTransport_OK = true;
+  }
   data = Wire.read();
   data <<= 8;
   data |= Wire.read();

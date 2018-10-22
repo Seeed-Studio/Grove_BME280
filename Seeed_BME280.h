@@ -40,6 +40,7 @@
 #define BME280_REG_TEMPDATA        0xFA
 #define BME280_REG_HUMIDITYDATA    0xFD
 
+#define _INVALID_DATA 999999
 
 class BME280
 {
@@ -50,7 +51,8 @@ public:
   uint32_t getHumidity(void);
   float calcAltitude(float pressure);
 private:
-uint8_t _address;
+  uint8_t _address;
+  bool isTransport_OK;
   // Calibratino data
   uint16_t dig_T1;
   int16_t dig_T2;
