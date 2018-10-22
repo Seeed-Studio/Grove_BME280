@@ -44,12 +44,13 @@
 class BME280
 {
 public:
-  bool init(void);
+  bool init(uint8_t i2c_addr = BME280_ADDRESS);
   float getTemperature(void);
   uint32_t getPressure(void);
   uint32_t getHumidity(void);
   float calcAltitude(float pressure);
 private:
+uint8_t _address;
   // Calibratino data
   uint16_t dig_T1;
   int16_t dig_T2;

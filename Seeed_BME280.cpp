@@ -1,7 +1,8 @@
 #include "Seeed_BME280.h"
 
-bool BME280::init(void)
+bool BME280::init(uint8_t i2c_addr)
 {
+  _address = i2c_addr;
   Wire.begin();
 
   if(BME280Read8(BME280_REG_CHIPID) != 0x60)
@@ -109,12 +110,13 @@ float BME280::calcAltitude(float pressure)
 
 uint8_t BME280::BME280Read8(uint8_t reg)
 {
-  Wire.beginTransmission(BME280_ADDRESS);
+  Wire.beginTransmission(_address);
   Wire.write(reg);
   Wire.endTransmission();
 
-  Wire.requestFrom(BME280_ADDRESS, 1);
-  while(!Wire.available());
+  Wire.requestFrom(_address, 1);
+  if(!Wire.available()) return 0;
+
   return Wire.read();
 }
 
@@ -122,12 +124,12 @@ uint16_t BME280::BME280Read16(uint8_t reg)
 {
   uint8_t msb, lsb;
 
-  Wire.beginTransmission(BME280_ADDRESS);
+  Wire.beginTransmission(_address);
   Wire.write(reg);
   Wire.endTransmission();
 
-  Wire.requestFrom(BME280_ADDRESS, 2);
-  while(Wire.available()<2);
+  Wire.requestFrom(_address, 2);
+  if(Wire.available()<2) return 0;
   msb = Wire.read();
   lsb = Wire.read();
 
@@ -154,12 +156,12 @@ uint32_t BME280::BME280Read24(uint8_t reg)
 {
   uint32_t data;
 
-  Wire.beginTransmission(BME280_ADDRESS);
+  Wire.beginTransmission(_address);
   Wire.write(reg);
   Wire.endTransmission();
 
-  Wire.requestFrom(BME280_ADDRESS, 3);
-  while(Wire.available()<3);
+  Wire.requestFrom(_address, 3);
+  if(Wire.available()<3) return 0;
   data = Wire.read();
   data <<= 8;
   data |= Wire.read();
@@ -171,7 +173,7 @@ uint32_t BME280::BME280Read24(uint8_t reg)
 
 void BME280::writeRegister(uint8_t reg, uint8_t val)
 {
-  Wire.beginTransmission(BME280_ADDRESS); // start transmission to device
+  Wire.beginTransmission(_address); // start transmission to device
   Wire.write(reg);       // send register address
   Wire.write(val);         // send value to write
   Wire.endTransmission();     // end transmission
