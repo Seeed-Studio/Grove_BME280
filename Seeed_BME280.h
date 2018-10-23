@@ -40,7 +40,7 @@
 #define BME280_REG_TEMPDATA        0xFA
 #define BME280_REG_HUMIDITYDATA    0xFD
 
-#define _INVALID_DATA 999999
+#define _INVALID_DATA NULL
 
 class BME280
 {
