@@ -2,11 +2,22 @@
 
 bool BME280::init(int i2c_addr)
 {
-  _devAddr = i2c_addr;
+  uint8_t retry = 0;
+  uint8_t chip_id = 0;
+
+
+  _devAddr = i2c_addr;  
   Wire.begin();
 
-  if(BME280Read8(BME280_REG_CHIPID) != 0x60)
-    return false;
+  while((retry++ < 5) && (chip_id != 0x60))
+  {
+    chip_id = BME280Read8(BME280_REG_CHIPID);
+#ifdef BMP280_DEBUG_PRINT
+    Serial.print("Read chip ID: ");
+    Serial.println(chip_id);
+#endif
+    delay(100);
+  }
 
   dig_T1 = BME280Read16LE(BME280_REG_DIG_T1);
   dig_T2 = BME280ReadS16LE(BME280_REG_DIG_T2);
@@ -79,7 +90,7 @@ uint32_t BME280::getPressure(void)
   var1 = (((((int64_t)1)<<47)+var1))*((int64_t)dig_P1)>>33;
   if (var1 == 0)
   {
-  return 0; // avoid exception caused by division by zero
+    return 0; // avoid exception caused by division by zero
   }
   p = 1048576-adc_P;
   p = (((p<<31)-var2)*3125)/var1;
@@ -115,7 +126,7 @@ float BME280::calcAltitude(float pressure)
   if(!isTransport_OK) {
     return 0;
   }
-  
+
   float A = pressure/101325;
   float B = 1/5.25588;
   float C = pow(A,B);
@@ -193,9 +204,14 @@ uint32_t BME280::BME280Read24(uint8_t reg)
   if(Wire.available() < 3) {
     isTransport_OK = false;
     return 0;
-  } else {
-    isTransport_OK = true;
   }
+  else if(isTransport_OK == false) {
+    isTransport_OK = true;    
+    if(!init(_devAddr)) {
+#ifdef BMP280_DEBUG_PRINT      
+      Serial.println("Device not connected or broken!");
+#endif      
+    }
   data = Wire.read();
   data <<= 8;
   data |= Wire.read();
