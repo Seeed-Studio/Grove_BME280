@@ -212,6 +212,7 @@ uint32_t BME280::BME280Read24(uint8_t reg)
       Serial.println("Device not connected or broken!");
 #endif      
     }
+  }
   data = Wire.read();
   data <<= 8;
   data |= Wire.read();
