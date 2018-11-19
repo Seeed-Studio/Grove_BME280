@@ -48,7 +48,7 @@ void loop()
   //get and print temperatures
   Serial.print("Temp: ");
   Serial.print(bme280.getTemperature());
-  Serial.println("C");//The unit for  Celsius because original arduino don't support speical symbols
+  Serial.println("C");//The unit for  Celsius because original arduino don't support special symbols
   
   //get and print atmospheric pressure data
   Serial.print("Pressure: ");
