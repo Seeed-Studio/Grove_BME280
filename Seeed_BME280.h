@@ -46,6 +46,7 @@ class BME280
 {
 public:
   bool init(int i2c_addr = BME280_ADDRESS);
+  bool init(int sda, int scl, int i2c_addr = BME280_ADDRESS);
   float getTemperature(void);
   uint32_t getPressure(void);
   uint32_t getHumidity(void);
@@ -83,6 +84,7 @@ private:
   int16_t BME280ReadS16LE(uint8_t reg);
   uint32_t BME280Read24(uint8_t reg);
   void writeRegister(uint8_t reg, uint8_t val);
+  bool readCalibration();
 };
 
 #endif

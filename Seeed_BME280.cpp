@@ -2,12 +2,29 @@
 
 bool BME280::init(int i2c_addr)
 {
+
+
+  _devAddr = i2c_addr;
+  Wire.begin();
+
+  return (readCalibration());
+}
+
+bool BME280::init(int sda, int scl, int i2c_addr)
+// sda and scl allow for alternate SDA and SCL pins to be used
+{
+
+
+  _devAddr = i2c_addr;
+  Wire.begin(sda,scl);
+
+  return (readCalibration());
+}
+
+bool BME280::readCalibration()
+{
   uint8_t retry = 0;
   uint8_t chip_id = 0;
-
-
-  _devAddr = i2c_addr;  
-  Wire.begin();
 
   while((retry++ < 5) && (chip_id != 0x60))
   {
@@ -206,11 +223,11 @@ uint32_t BME280::BME280Read24(uint8_t reg)
     return 0;
   }
   else if(isTransport_OK == false) {
-    isTransport_OK = true;    
+    isTransport_OK = true;
     if(!init(_devAddr)) {
-#ifdef BMP280_DEBUG_PRINT      
+#ifdef BMP280_DEBUG_PRINT
       Serial.println("Device not connected or broken!");
-#endif      
+#endif
     }
   }
   data = Wire.read();
