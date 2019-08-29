@@ -54,7 +54,7 @@ private:
   int _devAddr;
   bool isTransport_OK;
 
-  // Calibratino data
+  // Calibration data
   uint16_t dig_T1;
   int16_t dig_T2;
   int16_t dig_T3;
