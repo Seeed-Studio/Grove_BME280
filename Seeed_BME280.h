@@ -42,47 +42,46 @@
 #define BME280_REG_TEMPDATA        0xFA
 #define BME280_REG_HUMIDITYDATA    0xFD
 
-class BME280
-{
-public:
-  bool init(int i2c_addr = BME280_ADDRESS);
-  float getTemperature(void);
-  uint32_t getPressure(void);
-  uint32_t getHumidity(void);
-  float calcAltitude(float pressure);
-private:
-  int _devAddr;
-  bool isTransport_OK;
+class BME280 {
+  public:
+    bool init(int i2c_addr = BME280_ADDRESS);
+    float getTemperature(void);
+    uint32_t getPressure(void);
+    uint32_t getHumidity(void);
+    float calcAltitude(float pressure);
+  private:
+    int _devAddr;
+    bool isTransport_OK;
 
-  // Calibration data
-  uint16_t dig_T1;
-  int16_t dig_T2;
-  int16_t dig_T3;
-  uint16_t dig_P1;
-  int16_t dig_P2;
-  int16_t dig_P3;
-  int16_t dig_P4;
-  int16_t dig_P5;
-  int16_t dig_P6;
-  int16_t dig_P7;
-  int16_t dig_P8;
-  int16_t dig_P9;
-  uint8_t dig_H1;
-  int16_t dig_H2;
-  uint8_t dig_H3;
-  int16_t dig_H4;
-  int16_t dig_H5;
-  int8_t  dig_H6;
-  int32_t t_fine;
+    // Calibration data
+    uint16_t dig_T1;
+    int16_t dig_T2;
+    int16_t dig_T3;
+    uint16_t dig_P1;
+    int16_t dig_P2;
+    int16_t dig_P3;
+    int16_t dig_P4;
+    int16_t dig_P5;
+    int16_t dig_P6;
+    int16_t dig_P7;
+    int16_t dig_P8;
+    int16_t dig_P9;
+    uint8_t dig_H1;
+    int16_t dig_H2;
+    uint8_t dig_H3;
+    int16_t dig_H4;
+    int16_t dig_H5;
+    int8_t  dig_H6;
+    int32_t t_fine;
 
-  // private functions
-  uint8_t BME280Read8(uint8_t reg);
-  uint16_t BME280Read16(uint8_t reg);
-  uint16_t BME280Read16LE(uint8_t reg);
-  int16_t BME280ReadS16(uint8_t reg);
-  int16_t BME280ReadS16LE(uint8_t reg);
-  uint32_t BME280Read24(uint8_t reg);
-  void writeRegister(uint8_t reg, uint8_t val);
+    // private functions
+    uint8_t BME280Read8(uint8_t reg);
+    uint16_t BME280Read16(uint8_t reg);
+    uint16_t BME280Read16LE(uint8_t reg);
+    int16_t BME280ReadS16(uint8_t reg);
+    int16_t BME280ReadS16LE(uint8_t reg);
+    uint32_t BME280Read24(uint8_t reg);
+    void writeRegister(uint8_t reg, uint8_t val);
 };
 
 #endif
