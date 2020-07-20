@@ -16,6 +16,10 @@ bool BME280::init(int i2c_addr) {
         #endif
         delay(100);
     }
+    if (chip_id != 0x60){
+        Serial.println("Read Chip ID fail!");
+        return false;
+    }
 
     dig_T1 = BME280Read16LE(BME280_REG_DIG_T1);
     dig_T2 = BME280ReadS16LE(BME280_REG_DIG_T2);
