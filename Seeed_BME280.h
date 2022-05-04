@@ -46,8 +46,8 @@ class BME280 {
   public:
     bool init(int i2c_addr = BME280_ADDRESS);
     float getTemperature(void);
-    uint32_t getPressure(void);
-    uint32_t getHumidity(void);
+    float getPressure(void);
+    float getHumidity(void);
     float calcAltitude(float pressure);
   private:
     int _devAddr;
