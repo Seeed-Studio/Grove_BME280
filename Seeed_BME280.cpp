@@ -69,56 +69,54 @@ float BME280::getTemperature(void) {
     return T / 100;
 }
 
-uint32_t BME280::getPressure(void) {
-    int64_t var1, var2, p;
-
-    // Call getTemperature to get t_fine
-    getTemperature();
-    // Check if the last transport successed
-    if (!isTransport_OK) {
-        return 0;
-    }
-
-    int32_t adc_P = BME280Read24(BME280_REG_PRESSUREDATA);
-    adc_P >>= 4;
-
-    var1 = ((int64_t)t_fine) - 128000;
-    var2 = var1 * var1 * (int64_t)dig_P6;
-    var2 = var2 + ((var1 * (int64_t)dig_P5) << 17);
-    var2 = var2 + (((int64_t)dig_P4) << 35);
-    var1 = ((var1 * var1 * (int64_t)dig_P3) >> 8) + ((var1 * (int64_t)dig_P2) << 12);
-    var1 = (((((int64_t)1) << 47) + var1)) * ((int64_t)dig_P1) >> 33;
-    if (var1 == 0) {
-        return 0; // avoid exception caused by division by zero
-    }
-    p = 1048576 - adc_P;
-    p = (((p << 31) - var2) * 3125) / var1;
-    var1 = (((int64_t)dig_P9) * (p >> 13) * (p >> 13)) >> 25;
-    var2 = (((int64_t)dig_P8) * p) >> 19;
-    p = ((p + var1 + var2) >> 8) + (((int64_t)dig_P7) << 4);
-    return (uint32_t)p / 256;
+float BME280::getPressure(void) {
+  int64_t var1, var2, p;
+  // Call getTemperature to get t_fine
+  getTemperature();
+  // Check if the last transport successed
+  if (!isTransport_OK) {
+    return 0;
+  }
+  int32_t adc_P = BME280Read24(BME280_REG_PRESSUREDATA);
+  adc_P >>= 4;
+  var1 = ((int64_t)t_fine) - 128000;
+  var2 = var1 * var1 * (int64_t)dig_P6;
+  var2 = var2 + ((var1 * (int64_t)dig_P5) << 17);
+  var2 = var2 + (((int64_t)dig_P4) << 35);
+  var1 = ((var1 * var1 * (int64_t)dig_P3) >> 8) + ((var1 * (int64_t)dig_P2) << 12);
+  var1 = (((((int64_t)1) << 47) + var1)) * ((int64_t)dig_P1) >> 33;
+  if (var1 == 0) {
+    return 0; // avoid exception caused by division by zero
+  }
+  p = 1048576 - adc_P;
+  p = (((p << 31) - var2) * 3125) / var1;
+  var1 = (((int64_t)dig_P9) * (p >> 13) * (p >> 13)) >> 25;
+  var2 = (((int64_t)dig_P8) * p) >> 19;
+  p = ((p + var1 + var2) >> 8) + (((int64_t)dig_P7) << 4);
+  return (float)(p / 256.0);
 }
 
-uint32_t BME280::getHumidity(void) {
-    int32_t v_x1_u32r, adc_H;
-
-    // Call getTemperature to get t_fine
-    getTemperature();
-    // Check if the last transport successed
-    if (!isTransport_OK) {
-        return 0;
-    }
-
-    adc_H = BME280Read16(BME280_REG_HUMIDITYDATA);
-
-    v_x1_u32r = (t_fine - ((int32_t)76800));
-    v_x1_u32r = (((((adc_H << 14) - (((int32_t)dig_H4) << 20) - (((int32_t)dig_H5) * v_x1_u32r)) + ((
-                       int32_t)16384)) >> 15) * (((((((v_x1_u32r * ((int32_t)dig_H6)) >> 10) * (((v_x1_u32r * ((int32_t)dig_H3)) >> 11) + ((
-                                   int32_t)32768))) >> 10) + ((int32_t)2097152)) * ((int32_t)dig_H2) + 8192) >> 14));
-    v_x1_u32r = (v_x1_u32r - (((((v_x1_u32r >> 15) * (v_x1_u32r >> 15)) >> 7) * ((int32_t)dig_H1)) >> 4));
-    v_x1_u32r = (v_x1_u32r < 0 ? 0 : v_x1_u32r);
-    v_x1_u32r = (v_x1_u32r > 419430400 ? 419430400 : v_x1_u32r);
-    return (uint32_t)(v_x1_u32r >> 12) / 1024.0;
+float BME280::getHumidity(void) {
+  int32_t v_x1_u32r, adc_H;
+  // Call getTemperature to get t_fine
+  getTemperature();
+  // Check if the last transport successed
+  if (!isTransport_OK) {
+    return 0;
+  }
+  adc_H = BME280Read16(BME280_REG_HUMIDITYDATA);
+  v_x1_u32r = (t_fine - ((int32_t)76800));
+  v_x1_u32r = (
+                ((((adc_H << 14) - (((int32_t)dig_H4) << 20) - (((int32_t)dig_H5) * v_x1_u32r)) +
+                ((int32_t)16384)) >> 15) * (((((((v_x1_u32r * ((int32_t)dig_H6)) >> 10) *
+                (((v_x1_u32r * ((int32_t)dig_H3)) >> 11) + ((int32_t)32768))) >> 10) + ((int32_t)2097152)) *
+                ((int32_t)dig_H2) + 8192) >> 14));
+  v_x1_u32r = (v_x1_u32r - (((((v_x1_u32r >> 15) * (v_x1_u32r >> 15)) >> 7) * ((int32_t)dig_H1)) >> 4));
+  v_x1_u32r = (v_x1_u32r < 0 ? 0 : v_x1_u32r);
+  v_x1_u32r = (v_x1_u32r > 419430400 ? 419430400 : v_x1_u32r);
+  v_x1_u32r = v_x1_u32r >> 12;
+  float h = v_x1_u32r / 1024.0;
+  return h;
 }
 
 float BME280::calcAltitude(float pressure) {
