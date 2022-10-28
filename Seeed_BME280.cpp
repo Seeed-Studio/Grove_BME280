@@ -1,13 +1,13 @@
 #include "Seeed_BME280.h"
 
-bool BME280::init(int i2c_addr) {
+bool BME280::init(TwoWire* wire, int i2c_addr) {
     uint8_t retry = 0;
     uint8_t chip_id = 0;
 
 
     _devAddr = i2c_addr;
-    Wire.begin();
-
+    //Wire.begin();
+    wire.begin();
     while ((retry++ < 5) && (chip_id != 0x60)) {
         chip_id = BME280Read8(BME280_REG_CHIPID);
         #ifdef BMP280_DEBUG_PRINT
