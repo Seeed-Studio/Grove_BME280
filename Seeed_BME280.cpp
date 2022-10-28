@@ -8,6 +8,7 @@ bool BME280::init(TwoWire* wire, int i2c_addr) {
     _devAddr = i2c_addr;
     //Wire.begin();
     wire.begin();
+    
     while ((retry++ < 5) && (chip_id != 0x60)) {
         chip_id = BME280Read8(BME280_REG_CHIPID);
         #ifdef BMP280_DEBUG_PRINT
@@ -133,39 +134,39 @@ float BME280::calcAltitude(float pressure) {
 }
 
 uint8_t BME280::BME280Read8(uint8_t reg) {
-    Wire.beginTransmission(_devAddr);
-    Wire.write(reg);
-    Wire.endTransmission();
+    wire.beginTransmission(_devAddr);
+    wire.write(reg);
+    wire.endTransmission();
 
-    Wire.requestFrom(_devAddr, 1);
+    wire.requestFrom(_devAddr, 1);
     // return 0 if slave didn't response
-    if (Wire.available() < 1) {
+    if (wire.available() < 1) {
         isTransport_OK = false;
         return 0;
     } else {
         isTransport_OK = true;
     }
 
-    return Wire.read();
+    return wire.read();
 }
 
 uint16_t BME280::BME280Read16(uint8_t reg) {
     uint8_t msb, lsb;
 
-    Wire.beginTransmission(_devAddr);
-    Wire.write(reg);
-    Wire.endTransmission();
+    wire.beginTransmission(_devAddr);
+    wire.write(reg);
+    wire.endTransmission();
 
-    Wire.requestFrom(_devAddr, 2);
+    wire.requestFrom(_devAddr, 2);
     // return 0 if slave didn't response
-    if (Wire.available() < 2) {
+    if (wire.available() < 2) {
         isTransport_OK = false;
         return 0;
     } else {
         isTransport_OK = true;
     }
-    msb = Wire.read();
-    lsb = Wire.read();
+    msb = wire.read();
+    lsb = wire.read();
 
     return (uint16_t) msb << 8 | lsb;
 }
@@ -186,13 +187,13 @@ int16_t BME280::BME280ReadS16LE(uint8_t reg) {
 uint32_t BME280::BME280Read24(uint8_t reg) {
     uint32_t data;
 
-    Wire.beginTransmission(_devAddr);
-    Wire.write(reg);
-    Wire.endTransmission();
+    wire.beginTransmission(_devAddr);
+    wire.write(reg);
+    wire.endTransmission();
 
-    Wire.requestFrom(_devAddr, 3);
+    wire.requestFrom(_devAddr, 3);
     // return 0 if slave didn't response
-    if (Wire.available() < 3) {
+    if (wire.available() < 3) {
         isTransport_OK = false;
         return 0;
     } else if (isTransport_OK == false) {
@@ -203,18 +204,18 @@ uint32_t BME280::BME280Read24(uint8_t reg) {
             #endif
         }
     }
-    data = Wire.read();
+    data = wire.read();
     data <<= 8;
-    data |= Wire.read();
+    data |= wire.read();
     data <<= 8;
-    data |= Wire.read();
+    data |= wire.read();
 
     return data;
 }
 
 void BME280::writeRegister(uint8_t reg, uint8_t val) {
-    Wire.beginTransmission(_devAddr); // start transmission to device
-    Wire.write(reg);       // send register address
-    Wire.write(val);         // send value to write
-    Wire.endTransmission();     // end transmission
+    wire.beginTransmission(_devAddr); // start transmission to device
+    wire.write(reg);       // send register address
+    wire.write(val);         // send value to write
+    wire.endTransmission();     // end transmission
 }
