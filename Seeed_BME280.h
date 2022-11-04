@@ -43,16 +43,18 @@
 #define BME280_REG_HUMIDITYDATA    0xFD
 
 class BME280 {
+  private:
+    TwoWire * wire;
+    int _devAddr;
+    bool isTransport_OK;
   public:
     bool init(int i2c_addr = BME280_ADDRESS);
     float getTemperature(void);
     float getPressure(void);
     float getHumidity(void);
     float calcAltitude(float pressure);
+    BME280(TwoWire* wire);
   private:
-    int _devAddr;
-    bool isTransport_OK;
-
     // Calibration data
     uint16_t dig_T1;
     int16_t dig_T2;
